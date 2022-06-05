@@ -29,10 +29,6 @@ function Diffiehelman(){
 
 
         //Verificar con números grandes
-        console.log(A + ' '+ b + ' ' + p);
-        console.log(Math.pow(A,b));
-        console.log(KA + ' ' + KB);
-
         setClaveInter({
             Ka: KA,
             Kb: KB

@@ -1,8 +1,11 @@
 import react, {useState} from "react";
 
 function Vignere(){
-    const [mensaje, setMensaje] = useState('');
-    const [valork, setValork] = useState(0);
+
+    const [valoresVignere, setValoresVignere] = useState({
+      mensajeClaro: '',
+      claveK: '',
+    });  
     const [mensajeFinal, setMensajeFinal] = useState('');
     const [cifradoDescifrado, setCifradoDescifrado] = useState(1);  
 
@@ -10,24 +13,28 @@ function Vignere(){
     function handleCifrarDescifrar (event){
       setCifradoDescifrado(event.target.value);
     }   
+
+    function handleInput(event){
+      setValoresVignere({
+        ...valoresVignere,
+        [event.target.name]: event.target.value
+      });
+    }
+
     function handleSubmit(event){
         event.preventDefault();   
         //Se define el abecedario
         let abc = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','ñ','o','p','q','r','s','t','u','v','w','x','y','z'];  
-        //Se obtiene el mensaje
-        setMensaje(event.target[0].value);
-        //Se obtiene el valor de k o M
-        setValork(event.target[1].value); 
         
         //Guarda valores con el nuevo mensaje
         let arrayValMsj = []; 
         //Se genera un array de la cadena original
-        let arrayMsj = Array.from(mensaje.toLowerCase());  
+        let arrayMsj = Array.from(valoresVignere.mensajeClaro.toLowerCase());  
         
         //Guarda valores con k
         let arrayValK = []; 
         //Se genera un array de k
-        let arrayK = Array.from(valork.toLowerCase());  
+        let arrayK = Array.from(valoresVignere.claveK.toLowerCase());  
 
         //Para repetir la cadena en caso de que falten carácteres
         let i=0;
@@ -57,7 +64,7 @@ function Vignere(){
     //Nuevos valores agregando el valor del módulo de k
     let newMsj = [];  
     //Se procede a hacer el algoritmo de cifrado o descifrado
-    if(cifradoDescifrado === 1){
+    if(cifradoDescifrado == 1){
       arrayValMsj.forEach( function (valormsj,index){
           let newValue = (valormsj + arrayValK[index]) % 27;
           while(newValue > 27){
@@ -89,15 +96,27 @@ function Vignere(){
 
     let strMsjFinal = arrayFinal.toString().replace(/,/g,''); 
     setMensajeFinal(strMsjFinal); 
-    
+
     };    
     
     return (
         <div className="App">
           <h1>Cifrado Vignere</h1>
           <form onSubmit={handleSubmit}>
-            <input type='text' placeholder='Ingresar valores' ></input>
-            <input type='text' placeholder='Valor de k' ></input>
+            <input 
+              type='text' 
+              placeholder='Ingresar valores' 
+              name='mensajeClaro'
+              onChange={handleInput}
+              >  
+              </input>
+            <input 
+              type='text' 
+              placeholder='Valor de k' 
+              name='claveKM'
+              onChange={handleInput}
+              >
+              </input>
             <input 
               id='cifrar'
               type='radio' 

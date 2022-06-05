@@ -2,13 +2,22 @@ import react, {useState} from "react";
 
 function Hill(){
     
-    const [mensaje, setMensaje] = useState('');
-    const [valork, setValork] = useState(0);
+    const [valoresHill, setValoresHill] = useState({
+        mensajeClaro: '',
+        claveK: ''
+    });
     const [mensajeFinal, setMensajeFinal] = useState('');
     const [cifradoDescifrado, setCifradoDescifrado] = useState(1);
 
     function handleCifrarDescifrar(e){
         setCifradoDescifrado(e.target.value);
+    }
+
+    function handleInput(event){
+        setValoresHill({
+            ...valoresHill,
+            [event.target.name]: event.target.value
+        });
     }
 
     function handleSubmit(e){
@@ -17,21 +26,16 @@ function Hill(){
         //Se define el abecedario
         let abc = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','ñ','o','p','q','r','s','t','u','v','w','x','y','z'];
 
-        //Se obtiene el mensaje
-        setMensaje(e.target[0].value);
-        //Se obtiene el valor de k o M
-        setValork(e.target[1].value);
-
         //Guarda valores con el nuevo mensaje
         let arrayValMsj = [];
 
         //Se genera un array de la cadena original
-        let arrayMsj = Array.from(mensaje.toLowerCase());
+        let arrayMsj = Array.from(valoresHill.mensajeClaro.toLowerCase());
 
         //Guarda valores con k
         let arrayValK = []; 
         //Se genera un array de k
-        let arrayK = Array.from(valork.toLowerCase());  
+        let arrayK = Array.from(valoresHill.claveK.toLowerCase());  
 
         // Se compara con que letra coincide de nuestro alfabeto y se le da el valor
         arrayMsj.forEach(valormsj => {
@@ -51,13 +55,9 @@ function Hill(){
             });
         });
 
-        console.log('arrayK: '+arrayK+'valoresK: '+arrayValK);
-
         //Se divide el mensaje en dos bloques
         let bloque1 = [arrayValMsj[0],arrayValMsj[1]];
         let bloque2 = [arrayValMsj[2],arrayValMsj[3]];
-
-        // console.log(bloque1+' '+bloque2);
 
         let bloque = 0;
         let arrayValoresFinales = [];
@@ -72,11 +72,9 @@ function Hill(){
                         let numbloque = i % 2;
                         if(i < 2){
                             val1 += arrayValK[i] * bloque1[numbloque];
-                            console.log('iter: '+i+'val1: '+val1);
                         }
                         else{
                             val2 += arrayValK[i] * bloque1[numbloque];
-                            console.log('iter: '+i+'val2: '+val2);
                         }
                         i++;
                     }
@@ -85,11 +83,9 @@ function Hill(){
                         let numbloque = i % 2;
                         if(i < 2){
                             val1 += arrayValK[i] * bloque2[numbloque];
-                            console.log('iter: '+i+'val1: '+val1);
                         }
                         else{
                             val2 += arrayValK[i] * bloque2[numbloque];
-                            console.log('iter: '+i+'val2: '+val2);
                         }
                         i++; 
                     }
@@ -103,14 +99,13 @@ function Hill(){
                     val2 = val2 + 27;
                 }
                 arrayValoresFinales.push(val1, val2);
-                console.log('arrayFinal: '+arrayValoresFinales);
                 bloque++;
             }
 
 
         }
-        if(cifradoDescifrado === 1){
-            cifrado();
+        if(cifradoDescifrado == 1){
+            cifrado(arrayValK);
         }
         else{
             let adj = [arrayValK[3], -arrayValK[2], -arrayValK[1], arrayValK[0]];
@@ -129,11 +124,6 @@ function Hill(){
             });
 
             cifrado(kMenosUno);
-            
-            console.log('adjunta: '+adj);
-            console.log('Transadjunta: '+tadj);
-            console.log('determinante: '+deterK);
-            console.log('KmenosUno: '+kMenosUno);
         }
        
 
@@ -150,15 +140,24 @@ function Hill(){
         let strMsjFinal = arrayFinal.toString().replace(/,/g,''); 
         setMensajeFinal(strMsjFinal); 
 
-        console.log(arrayValoresFinales);
     }
 
     return(
         <div className="Hill">
             <h1>Cifrado Hill</h1>
             <form onSubmit={handleSubmit}>
-                <input type='text' placeholder="Ingresar valores" maxLength={4}/>
-                <input type='text' placeholder="Ingresar k" maxLength={4}/>
+                <input 
+                    type='text' 
+                    placeholder="Ingresar valores" 
+                    name="mensajeClaro"
+                    onChange={handleInput}
+                    maxLength={4}/>
+                <input 
+                    type='text' 
+                    placeholder="Ingresar k" 
+                    name="claveK"
+                    onChange={handleInput}
+                    maxLength={4}/>
                 <input 
                     id='cifrar'
                     type='radio' 
